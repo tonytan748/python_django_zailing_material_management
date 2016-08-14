@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+
+{% block page_header%}
+
+{% endblock %}
+
+{% block dashboard %}
+<div class="row placeholders">
+  <div class="col-lg-2">
+    <a class="text-left btn btn-primary btn-lg" type="button" data-toggle="modal" data-target="#CreateItem" id="open_item_table">新增物料</a>
+  </div>
+  <div class="col-lg-2">
+    <a class="text-left btn btn-primary btn-lg" type="button" data-toggle="modal" data-target="#CreateType" id="add_type_table">增加类型</a>
+  </div>
+</div>
+
+  <div class="modal fade bs-example-modal-lg" id="CreateItem" tabindex="-1" role="dialog" aria-labelledby="myItemLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myItemLabel">新增物料</h4>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <form class="form-horizontal">
+              {% csrf_token %}
+
+              <input type="hidden" name="id" id="id_id">
+
+              <div class="form-group">
+              <label for="id_ids" class="col-sm-2 control-label">编码:</label>
+              <div class="id_ids_msg"><a style="color:red;" id="msg"></a></div>
+                <div class="col-sm-10">
+                  <input id="id_ids" maxlength="200" name="ids" type="text" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="id_modelname" class="col-sm-2 control-label">型号:</label>
+              <div class="id_modelname_msg"><a style="color:red;" id="msg"></a></div>
+                <div class="col-sm-10">
+                  <input id="id_modelname" maxlength="200" name="modelname" type="text" class="form-control"  />
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="id_potting" class="col-sm-2 control-label">封装:</label>
+              <div class="id_potting_msg"><a style="color:red;" id="msg"></a></div>
+                <div class="col-sm-10">
+                  <input id="id_potting" maxlength="100" name="potting" type="text" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="id_position" class="col-sm-2 control-label">位号:</label>
+              <div class="id_position_msg"><a style="color:red;" id="msg"></a></div>
+                <div class="col-sm-10">
+                  <input id="id_position" maxlength="100" name="position" type="text" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="id_itemtype" class="col-sm-2 control-label">类型:</label>
+              <div class="id_itemtype_msg"><a style="color:red;" id="msg"></a></div>
+                <div class="col-sm-10">
+                  <select id="id_itemtype" name="itemtype" class="form-control" >
+                    {% for type in types %}
+                    <option value="{{type.id}}">{{type.name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="id_qty" class="col-sm-2 control-label">数量:</label>
+              <div class="id_qty_msg"><a style="color:red;" id="msg"></a></div>
+                <div class="col-sm-10">
+                  <input id="id_qty" name="qty" type="number" value="0" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="id_price" class="col-sm-2 control-label">单价:</label>
+              <div class="id_price_msg"><a style="color:red;" id="msg"></a></div>
+                <div class="col-sm-10">
+                  <input id="id_price" name="price" step="any" type="number" value="0.0" class="form-control"  />
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="id_description" class="col-sm-2 control-label">描述:</label>
+              <div class="id_description_msg"><a style="color:red;" id="msg"></a></div>
+                <div class="col-sm-10">
+                  <textarea cols="40" id="id_description" name="description" rows="2" class="form-control" >
+                  </textarea>
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="id_markup" class="col-sm-2 control-label">备注:</label>
+              <div class="id_markup_msg"><a style="color:red;" id="msg"></a></div>
+                <div class="col-sm-10">
+                  <textarea cols="40" id="id_markup" name="markup" rows="2" class="form-control" >
+                  </textarea>
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" id="bom_search_item_close_btn" data-dismiss="modal">关闭</button>
+
+          <button type="button" class="btn btn-primary" id="create_new_item">新建</button>
+
+          <button type="button" class="btn btn-primary" id="update_item">修改</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade bs-example-modal-lg" id="CreateType" tabindex="-1" role="dialog" aria-labelledby="myTypeLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myTypeLabel">新增类型</h4>
+        </div>
+          <div class="modal-body">
+              <div class="table-responsive">
+                <form class="form-horizontal">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="type_name" class="col-sm-2 control-label">类型名称:</label>
+                    <a style="color:red;" id="type_name_msg"></a>
+                    <div class="col-sm-10">
+                        <input id="itemtype_name" maxlength="200" name="itemtype_name" type="text" class="form-control" />
+                    </div>
+                </div>
+                    <div class="form-group">
+                        <label for="type_description" class="col-sm-2 control-label">描述:</label>
+                        <a style="color:red;" id="type_description_msg"></a>
+                        <div class="col-sm-10">
+                            <textarea cols="40" id="itemtype_description" name="itemtype_description" rows="2" class="form-control" >
+                            </textarea>
+                        </div>
+                    </div>
+              </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" id="bom_search_item_close_btn" data-dismiss="modal">关闭</button>
+              <button type="button" class="btn btn-primary" id="create_new_type">新建</button>
+          </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block item_table %}
+<h2 class="sub-header">{{title}}</h2>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        {% for name in items_title %}
+          <th>{{name}}</th>
+        {% endfor %}
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="item_list">
+      {% for item in items %}
+      <tr class="item">
+        <td><a class="text-left btn btn-default" type="button" data-toggle="modal" data-target="#EditItem" id="edit_type_btn">编辑物料</a></td>
+        <input type="hidden" value="{{item.id}}" id="id">
+        <td id="ids">{{item.ids}}</td>
+        <td id="modelname">{{item.modelname}}</td>
+        <td id="potting">{{item.potting}}</td>
+        <td id="position">{{item.position}}</td>
+        <td id="description">{{item.description}}</td>
+        <td id="itemtype">{{item.itemtype}}</td>
+        <td id="price">{{item.price}}</td>
+        <td id="qty">{{item.qty}}</td>
+        <td id="markup">{{item.markup}}</td>
+        <td class="col-lg-2">
+            <div class="input-group item_data">
+              <input type="text" name="operate_qty" class="form-control" aria-label="请输入操作数量">
+              <input type="hidden" name="user_id" class="user_id" value="{{user_id}}">
+              <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">操作 <span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li><a id="item_out" >领用</a></li>
+                  <li><a id="item_add">入库</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="operation_msg"><a style="color:red;" id="msg"></a></div>
+
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+<!--分页-->
+  <div class="pagination">
+      <span class="step-links">
+          {% if items.has_previous %}
+              <a href="?page={{ items.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+              Page {{ items.number }} of {{ items.paginator.num_pages }}.
+          </span>
+
+          {% if items.has_next %}
+              <a href="?page={{ items.next_page_number }}">next</a>
+          {% endif %}
+      </span>
+  </div>
+
+</div>
+
+
+<!--编辑物料-->
+    <div class="modal fade bs-example-modal-lg" id="EditItem" tabindex="-1" role="dialog" aria-labelledby="editItemLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="editItemLabel">编辑物料</h4>
+        </div>
+          <div class="modal-body">
+              <div class="table-responsive">
+                <form class="form-horizontal">
+                {% csrf_token %}
+                     <input type="hidden" name="id" id="edit_id">
+                      <div class="form-group">
+                      <label for="edit_ids" class="col-sm-2 control-label">编码:</label>
+                      <div class="edit_ids_msg"><a style="color:red;" id="msg"></a></div>
+                        <div class="col-sm-10">
+                          <input id="edit_ids" maxlength="200" name="ids" type="text" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                      <label for="edit_modelname" class="col-sm-2 control-label">型号:</label>
+                      <div class="edit_modelname_msg"><a style="color:red;" id="msg"></a></div>
+                        <div class="col-sm-10">
+                          <input id="edit_modelname" maxlength="200" name="modelname" type="text" class="form-control"  />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                      <label for="edit_potting" class="col-sm-2 control-label">封装:</label>
+                      <div class="edit_potting_msg"><a style="color:red;" id="msg"></a></div>
+                        <div class="col-sm-10">
+                          <input id="edit_potting" maxlength="100" name="potting" type="text" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                      <label for="edit_position" class="col-sm-2 control-label">位号:</label>
+                      <div class="edit_position_msg"><a style="color:red;" id="msg"></a></div>
+                        <div class="col-sm-10">
+                          <input id="edit_position" maxlength="100" name="position" type="text" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                      <label for="edit_itemtype" class="col-sm-2 control-label">类型:</label>
+                      <div class="edit_itemtype_msg"><a style="color:red;" id="msg"></a></div>
+                        <div class="col-sm-10">
+                          <select id="edit_itemtype" name="itemtype" class="form-control" >
+                            {% for type in types %}
+                            <option value="{{type.id}}">{{type.name}}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                      <label for="edit_qty" class="col-sm-2 control-label">数量:</label>
+                      <div class="edit_qty_msg"><a style="color:red;" id="msg"></a></div>
+                        <div class="col-sm-10">
+                          <input id="edit_qty" name="qty" type="number" value="0" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                      <label for="edit_price" class="col-sm-2 control-label">单价:</label>
+                      <div class="edit_price_msg"><a style="color:red;" id="msg"></a></div>
+                        <div class="col-sm-10">
+                          <input id="edit_price" name="price" step="any" type="number" value="0.0" class="form-control"  />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                      <label for="edit_description" class="col-sm-2 control-label">描述:</label>
+                      <div class="edit_description_msg"><a style="color:red;" id="msg"></a></div>
+                        <div class="col-sm-10">
+                          <textarea cols="40" id="edit_description" name="description" rows="2" class="form-control" >
+                          </textarea>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                      <label for="edit_markup" class="col-sm-2 control-label">备注:</label>
+                      <div class="edit_markup_msg"><a style="color:red;" id="msg"></a></div>
+                        <div class="col-sm-10">
+                          <textarea cols="40" id="edit_markup" name="markup" rows="2" class="form-control" >
+                          </textarea>
+                        </div>
+                      </div>
+                </form>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" id="edit_item_close_btn" data-dismiss="modal">关闭</button>
+              <button type="button" class="btn btn-primary" id="edit_item_btn">修改</button>
+          </div>
+      </div>
+
+    </div>
+  </div>
+
+
+
+{% endblock %}

@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+
+{% block page_header%}
+{% endblock %}
+
+
+{% block dashboard %}
+
+<div class="row placeholders">
+  <!-- <h3 class="text-left">物料搜索</h3> -->
+  <div class="col-lg-4">
+    <div class="input-group">
+      <input type="text" class="form-control" id="bom_item_search" placeholder="物料搜索">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" data-toggle="modal" data-target="#ItemSearch" id="bom_item_search_btn">物料搜索</button>
+      </span>
+    </div><!-- /input-group -->
+  </div>
+  <div class="col-lg-4">
+    <div class="input-group">
+      <input type="text" class="form-control" id="bom_name_search" placeholder="BOM搜索">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" data-toggle="modal" data-target="#BomSearch" id="bom_name_search_btn">BOM搜索</button>
+      </span>
+    </div><!-- /input-group -->
+  </div>
+  <div class="col-lg-4">
+<form method="post" action="../bom_export/">
+  {% csrf_token %}
+    <div class="input-group">
+      <!-- <input type="text" class="form-control" id="bom_item_search" placeholder="Search for..."> -->
+
+      <select class="form-control old_bom_names" name="old_bom_names">
+        {% for bom in boms%}
+          <option class="bom_name" value="{{bom.id}}">{{ bom.name }}</option>
+        {% endfor %}
+      </select>
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id="bom_item_view">查看</button>
+
+        <button class="btn btn-default" type="submit" id="bom_export">导出</button>
+
+        <button class="btn btn-primary" type="button" id="save_changed_bom">保存修改</button>
+      </span>
+    </div><!-- /input-group -->
+  </form>
+  </div>
+
+</div>
+
+
+<!-- 物料搜索 -->
+<div class="modal fade bs-example-modal-lg" id="ItemSearch" tabindex="-1" role="dialog" aria-labelledby="myItemLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myItemLabel">物料搜索结果</h4>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              {% for name in items_title %}
+                {% if name != "备注" %}
+                  <th>{{name}}</th>
+                {% endif %}
+              {% endfor %}
+              <th>领用数量</th>
+              <th>备注</th>
+            </tr>
+          </thead>
+          <tbody id="search_item_result">
+<!-- <tr id='search_item_tr'>
+  <input type="hidden" value="item.id" class="search_item_id">
+  <td class="search_item_ids">item.ids</td>
+  <td class="search_item_modelname">item.modelname</td>
+  <td class="search_item_potting">item.potting</td>
+  <td class="search_item_position">item.position</td>
+  <td class="search_item_description">item.description</td>
+  <td class="search_item_price">item.price</td>
+  <td class="search_item_qty">item.qty</td>
+  <td><input type='text' name='search_item_value' class='search_item_value'></td>
+  <td><input type='text' name='search_item_remark' class='search_item_remark'></td>
+</tr> -->
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" id="bom_search_item_close_btn" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="bom_item_search_save">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOM搜索 -->
+<div class="modal fade" id="BomSearch" tabindex="-1" role="dialog" aria-labelledby="myBomLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myBomLabel">BOM搜索结果</h4>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>BOM名称</th>
+              <th>创建者</th>
+              <th>建表时间</th>
+              <th>描述</th>
+            </tr>
+          </thead>
+          <tbody id="search_bom_result">
+<!-- <tr id='search_bom_tr'>
+<input type="hidden" value="{{bom.id}}">
+<input type="radio" name="search_bom_name" id="search_bom_name" autocomplete="off">{{bom.name}}
+  <td class='search_item_ids'>{{bom.user}}</td>
+  <td>{{bom.created}}</td>
+  <td>{{bom.description}}</td>
+</tr> -->
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" id="bom_search_item_close_btn" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="bom_item_view_2">查看物料列表</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+
+{% block item_table %}
+<h3 class="text-left">{{title}}</h3>
+
+<div class="row">
+<form class="col-lg-6 form-horizontal">
+  <div class="form-group">
+    <label for="new_bom_name" class="col-sm-2 control-label">BOM表名</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="" value="" placeholder="新建BOM表名" id="new_bom_name">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="new_bom_description" class="col-sm-2 control-label">BOM描述</label>
+    <div class="col-sm-10">
+      <textarea id="new_bom_description" name="" rows="2" class="form-control" >
+      </textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button class="btn btn-primary" type="button" id="create_new_bom">建立BOM表</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+<div class="table-responsive">
+  <form method="post" action="">
+    <button class="btn btn-default" type="button" id="bom_item_list_select_all">全选</button>
+    <button class="btn btn-default" type="button" id="delete_bom_temp_list">删除选择项</button>
+    <button class="btn btn-default" type="button" id="confirm_bom_temp_list">保留选择项</button>
+
+    <!-- <input type="text" name="" value="" placeholder="新建BOM表名" id="new_bom_name">
+
+    <button class="btn btn-primary" type="button" id="create_new_bom">建立BOM表</button> -->
+
+    <!-- <input type="checkbox" id="keep_temp_bom" name="keep_temp_bom">保留临时BOM清单 -->
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        {% for name in items_title %}
+          {% if name != "备注" %}
+            <th>{{name}}</th>
+          {% endif %}
+        {% endfor %}
+        <th>操作</th>
+        <th>BOM备注</th>
+      </tr>
+    </thead>
+    <tbody id="bom_item_list">
+      {% for item in items %}
+      <tr>
+        <td>
+          <input type="checkbox" class="selected_item"  name="selected_item">
+          <input type="hidden" class="bom_item_id"  value="{{item.item.id}}">
+        </td>
+        <td class="bom_item_ids">{{item.item.ids}}</td>
+        <td>{{item.item.modelname |default_if_none:""}}</td>
+        <td>{{item.item.potting |default_if_none:""}}</td>
+        <td>{{item.item.position |default_if_none:""}}</td>
+        <td>{{item.item.description |default_if_none:""}}</td>
+        <td>{{item.item.price |default_if_none:0.0}}</td>
+        <td class='item_qty'>{{item.item.qty}}</td>
+        <!-- <td>{{item.item.markup}}</td> -->
+        <td>
+          <input type='text' name='operate_qty' class='bom_item_qty' value='{{item.qty}}'></td>
+        <td>
+          <input type='text' name="bom_item_remark" class='bom_item_remark' value='{{item.remark}}'>
+        </td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</form>
+
+
+</div>
+
+{% endblock %}
