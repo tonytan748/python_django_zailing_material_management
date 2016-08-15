@@ -150,7 +150,17 @@ function csrfSafeMethod(method) {
         } else {
 
           $.each(data.data,function(i,item){
-            $("#search_item_result").append("<tr id='search_item_tr'>              <td class='search_item_ids'><input type='hidden' value='" + item.id + "' class='search_item_id'>" + item.ids + "</td><td class='search_item_modelname'>" + item.modelname + "</td><td class='search_item_potting'>" + item.potting + "</td><td class='search_item_position'>" + item.position + "</td><td class='search_item_description'>" + item.description + "</td><td class='search_item_price'>" + item.price + "</td><td class='search_item_qty'>" + item.qty + "</td><td><input type='text' name='search_item_value' class='search_item_value'></td><td><input type='text' name='search_item_remark' class='search_item_remark'></td></tr>");
+            $("#search_item_result").append("<tr id='search_item_tr'>"+
+            "<td class='search_item_ids'><input type='hidden' value='" + item.id + "' class='search_item_id'>" + item.ids + "</td>"+
+            "<td class='search_item_modelname'>" + item.modelname + "</td>"+
+            "<td class='search_item_potting'>" + item.potting + "</td>"+
+            "<td class='search_item_position'>" + item.position + "</td>"+
+            "<td class='search_item_description'>" + item.description + "</td>"+
+            "<td class='search_item_itemtype'>" + item.itemtype + "</td>"+
+            "<td class='search_item_price'>" + item.price + "</td>"+
+            "<td class='search_item_qty'>" + item.qty + "</td>"+
+            "<td><input type='text' name='search_item_value' class='search_item_value'></td><td><input type='text' name='search_item_remark' class='search_item_remark'></td>"+
+            "</tr>");
           });
         }
       }else {
@@ -172,6 +182,7 @@ function csrfSafeMethod(method) {
       var item_potting = $(this).find(".search_item_potting").text();
       var item_position = $(this).find(".search_item_position").text();
       var item_description = $(this).find(".search_item_description").text();
+      var item_itemtype = $(this).find(".search_item_itemtype").text();
       var item_price = $(this).find(".search_item_price").text();
       var item_instore = $(this).find(".search_item_qty").text();
 
@@ -190,6 +201,7 @@ function csrfSafeMethod(method) {
             item_potting:item_potting,
             item_position:item_position,
             item_description:item_description,
+            item_itemtype:item_itemtype,
             item_price:item_price,
             item_instore:item_instore,
             qty:item_val,
@@ -201,7 +213,19 @@ function csrfSafeMethod(method) {
 
     if (items.length>0){
       for(var i=0;i<items.length;i++){
-        $("#bom_item_list").append("<tr><td><input type='checkbox' class='selected_item' name='selected_item'><input type='hidden' class='bom_item_id'  value='" + items[i]["item_id"] + "'></td><td class='bom_item_ids'>" + items[i]["item_ids"] + "</td><td>" + items[i]["item_modelname"] + "</td><td>" + items[i]["item_potting"] + "</td><td>" + items[i]["item_position"] + "</td><td>" + items[i]["item_description"] + "</td><td>" + items[i]["item_price"] + "</td><td class='item_qty'>" + items[i]["item_instore"] + "</td><td><input type='text' name='operate_qty' class='bom_item_qty' value='" + items[i]["qty"] + "'></td><td><input type='text' name='bom_item_remark' class='bom_item_remark' value='" + items[i]["remark"] + "'></td></tr>");
+        $("#bom_item_list").append("<tr>"+
+        "<td><input type='checkbox' class='selected_item' name='selected_item'>"+
+          "<input type='hidden' class='bom_item_id'  value='" + items[i]["item_id"] + "'>"+
+        "</td><td class='bom_item_ids'>" + items[i]["item_ids"] + "</td><td>" + items[i]["item_modelname"] + "</td>"+
+        "<td>" + items[i]["item_potting"] + "</td>"+
+        "<td>" + items[i]["item_position"] + "</td>"+
+        "<td>" + items[i]["item_description"] + "</td>"+
+        "<td>" + items[i]["item_itemtype"] + "</td>"+
+        "<td>" + items[i]["item_price"] + "</td>"+
+        "<td class='item_qty'>" + items[i]["item_instore"] + "</td>"+
+        "<td><input type='text' name='operate_qty' class='bom_item_qty' value='" + items[i]["qty"] + "'></td>"+
+        "<td><input type='text' name='bom_item_remark' class='bom_item_remark' value='" + items[i]["remark"] + "'></td>"+
+        "</tr>");
       }
       $("#ItemSearch #bom_search_item_close_btn").click();
 
@@ -484,7 +508,20 @@ $("#bom_item_view_2").click(function(){
           $("#BomSearch").modal('hide');
           $("#bom_item_list").html("");
           $.each(data.data,function(i,item){
-            $("#bom_item_list").append("<tr><td><input type='checkbox' class='selected_item' name='selected_item'><input type='hidden' class='bom_item_id'  value='" + item.id + "'></td><td class='bom_item_ids'>" + item.ids + "</td><td>" + item.modelname + "</td><td>" + item.potting + "</td><td>" + item.position + "</td><td>" + item.description + "</td><td>" + item.price + "</td><td class='item_qty'>" + item.qty + "</td><td><input type='text' name='operate_qty' class='bom_item_qty' value='" + item.bom_qty + "'></td><td><input type='text' name='bom_item_remark' class='bom_item_remark' value='" + item.bom_remark + "'></td></tr>");
+            $("#bom_item_list").append("<tr>"+
+            "<td><input type='checkbox' class='selected_item' name='selected_item'>"+
+              "<input type='hidden' class='bom_item_id'  value='" + item.id + "'>"+
+            "</td>"+
+            "<td class='bom_item_ids'>" + item.ids + "</td><td>" + item.modelname + "</td>"+
+            "<td>" + item.potting + "</td>"+
+            "<td>" + item.position + "</td>"+
+            "<td>" + item.description + "</td>"+
+            "<td>" + item.itemtype + "</td>"+
+            "<td>" + item.price + "</td>"+
+            "<td class='item_qty'>" + item.qty + "</td>"+
+            "<td><input type='text' name='operate_qty' class='bom_item_qty' value='" + item.bom_qty + "'></td>"+
+            "<td><input type='text' name='bom_item_remark' class='bom_item_remark' value='" + item.bom_remark + "'></td>"+
+            "</tr>");
             });
             $(".old_bom_names").val(item.id);
         }

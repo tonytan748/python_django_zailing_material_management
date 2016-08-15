@@ -218,6 +218,9 @@ def bom_item_search(request):
     data = request.GET.get("bom_item_search")
     items = list(Item.objects.filter(Q(ids__contains=data)|Q(modelname__contains=data)).values())
     if items:
+        for item in items:
+            itemtype = ItemType.objects.get(id=item["itemtype_id"])
+            item['itemtype'] = itemtype.name
         return JsonResponse({'status':'true','data':items})
     return JsonResponse({'status':'false','message':u"查询结果为空"})
 
@@ -296,6 +299,7 @@ def get_old_bom(request):
     bom_list = BomList.objects.filter(bom=bom)
     if bom_list:
         bom_list = [{'id':i.id,'item_id':i.item.id,'ids':i.item.ids,'modelname':i.item.modelname,'potting':i.item.potting,'position':i.item.position,'description':i.item.description,'itemtype':i.item.itemtype.name,'price':i.item.price,'qty':i.item.qty,'markup':i.item.markup,'bom_qty':i.qty,'bom_remark':i.remark} for i in bom_list]
+        print(bom_list)
         return JsonResponse({'status':'true',"data":bom_list})
     else:
         return JsonResponse({'status':'false',"message":u"没有查找到物料"})
