@@ -212,8 +212,7 @@ def item_search(request):
         else:
             return redirect(url)
 
-
-
+@ajax_checking()
 def bom_item_search(request):
     data = request.GET.get("bom_item_search")
     items = list(Item.objects.filter(Q(ids__contains=data)|Q(modelname__contains=data)).values())
@@ -221,6 +220,7 @@ def bom_item_search(request):
         for item in items:
             itemtype = ItemType.objects.get(id=item["itemtype_id"])
             item['itemtype'] = itemtype.name
+            print(item)
         return JsonResponse({'status':'true','data':items})
     return JsonResponse({'status':'false','message':u"查询结果为空"})
 
