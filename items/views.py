@@ -220,7 +220,6 @@ def bom_item_search(request):
         for item in items:
             itemtype = ItemType.objects.get(id=item["itemtype_id"])
             item['itemtype'] = itemtype.name
-            print(item)
         return JsonResponse({'status':'true','data':items})
     return JsonResponse({'status':'false','message':u"查询结果为空"})
 

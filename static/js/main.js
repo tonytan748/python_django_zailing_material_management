@@ -476,7 +476,6 @@ $("#bom_name_search_btn").click(function(){
         alert(data.message);
         return false;
       } else {
-
         $.each(data.data,function(i,result){
           $("#search_bom_result").append("<tr id='search_bom_tr'><td>           <input type='hidden' value='" + result.id + "'><input type='radio' name='search_bom_name' id='search_bom_name' autocomplete='off' value='" + result.id + "'>" + result.name + "</td><td>" + result.user_name + "</td><td>" + result.created + "</td><td>" + result.description + "</td></tr>");
         });
@@ -493,7 +492,6 @@ $("#bom_name_search_btn").click(function(){
 $("#bom_item_view_2").click(function(){
   var user_id = $(".user_id").val();
   var bom_id = $("#search_bom_result input[name='search_bom_name']:checked").val();
-  alert(bom_id);
   if(bom_id.length == 0){
     alert("没有选择BOM");
     return false;
