@@ -3,7 +3,8 @@
 def page_data(request):
     return {
         'header':u"再灵物料管理系统",
-        'navs':[{"name":u"报表导出","url":"#"}],
+        # 'navs':[{"name":u"报表导出","url":"#"}],
+        'navs':[],
         # {"name":u"库存","url":"#"},
         'sidebars':[[{'name':u"物料管理","url":"../index/"},{"name":u"BOM清单","url":"../bomlist/"},{"name":u"类型管理","url":"../itemtype/"}]],
         # ,[{"name":"Nav item","url":"#"}]],

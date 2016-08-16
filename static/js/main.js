@@ -235,268 +235,264 @@ function csrfSafeMethod(method) {
   });
 
 
-//删除BOM临时表物料项
-$("#delete_bom_temp_list").click(function(){
-  var user_id = $(".user_id").val();
-  var ids = new Array();
-  $("input[name='selected_item']:checked").each(function(){
-    var id = $(this).parents("tr").find(".bom_item_ids").text();
-    ids.push(id);
-  });
-  if(ids.length==0){
-    alert("没有选择要删除的数据，请重试！");
-    return false;
-  }
-  $("input[name='selected_item']:checked").each(function(){
-      var id = $(this).parents("tr").remove();
-  });
-
-});
-
-
-//保留选择项
-$("#confirm_bom_temp_list").click(function(){
-  var user_id = $(".user_id").val();
-  var ids = new Array();
-  $("input[name='selected_item']:checked").each(function(){
-    var qty = $(this).parents("tr").find(".bom_item_qty").val();
-    var stock = $(this).parents("tr").find(".item_qty").text();
-    if (parseInt(qty) > parseInt(stock)){
-      alert("数量超出库存，请确认数量");
+  //删除BOM临时表物料项
+  $("#delete_bom_temp_list").click(function(){
+    var user_id = $(".user_id").val();
+    var ids = new Array();
+    $("input[name='selected_item']:checked").each(function(){
+      var id = $(this).parents("tr").find(".bom_item_ids").text();
+      ids.push(id);
+    });
+    if(ids.length==0){
+      alert("没有选择要删除的数据，请重试！");
       return false;
     }
-    var id = $(this).parents("tr").find(".bom_item_id").val();
-    ids.push(id);
+    $("input[name='selected_item']:checked").each(function(){
+        var id = $(this).parents("tr").remove();
+    });
   });
-  if(ids.length==0){
-    alert("没有选择要筛选的数据，请重试！");
-    return false;
-  }
-  $("input[name='selected_item']:not(:checked)").each(function(){
-      var id = $(this).parents("tr").remove();
+
+
+  //保留选择项
+  $("#confirm_bom_temp_list").click(function(){
+    var user_id = $(".user_id").val();
+    var ids = new Array();
+    $("input[name='selected_item']:checked").each(function(){
+      var qty = $(this).parents("tr").find(".bom_item_qty").val();
+      var stock = $(this).parents("tr").find(".item_qty").text();
+      if (parseInt(qty) > parseInt(stock)){
+        alert("数量超出库存，请确认数量");
+        return false;
+      }
+      var id = $(this).parents("tr").find(".bom_item_id").val();
+      ids.push(id);
+    });
+    if(ids.length==0){
+      alert("没有选择要筛选的数据，请重试！");
+      return false;
+    }
+    $("input[name='selected_item']:not(:checked)").each(function(){
+        var id = $(this).parents("tr").remove();
+      });
+
+  });
+
+  //Bom物料全选
+  $("#bom_item_list_select_all").click(function(){
+    var select_text = $("#bom_item_list_select_all").text();
+    if (select_text=="全选"){
+      $(".selected_item").prop("checked",true);
+      $("#bom_item_list_select_all").text("全不选");
+    }else{
+      $(".selected_item").prop("checked",false);
+      $("#bom_item_list_select_all").text("全选");
+    }
+  });
+
+
+  $('#new_bom_description').val("");
+  //新建bom表
+  $("#create_new_bom").click(function(){
+
+    var new_bom_name = $("#new_bom_name").val();
+    var new_bom_description = $("#new_bom_description").val();
+    if(!isNaN(new_bom_name)==true){
+      alert("请输入BOM表名");
+      return false;
+    }
+
+    $(".old_bom_names").each(function(){
+      if($(this).children(".bom_name").text()==new_bom_name){
+        alert("BOM名称已存在");
+        return false;
+      }
     });
 
-});
+    var user_id = $(".user_id").val();
 
-//Bom物料全选
-$("#bom_item_list_select_all").click(function(){
-  var select_text = $("#bom_item_list_select_all").text();
-  if (select_text=="全选"){
-    $(".selected_item").prop("checked",true);
-    $("#bom_item_list_select_all").text("全不选");
-  }else{
-    $(".selected_item").prop("checked",false);
-    $("#bom_item_list_select_all").text("全选");
-  }
-});
-
-
-$('#new_bom_description').val("");
-//新建bom表
-$("#create_new_bom").click(function(){
-
-  var new_bom_name = $("#new_bom_name").val();
-  var new_bom_description = $("#new_bom_description").val();
-  if(!isNaN(new_bom_name)==true){
-    alert("请输入BOM表名");
-    return false;
-  }
-
-  $(".old_bom_names").each(function(){
-    if($(this).children(".bom_name").text()==new_bom_name){
-      alert("BOM名称已存在");
-      return false;
-    }
-  });
-
-  var user_id = $(".user_id").val();
-
-  var items = new Array();
-  $("input[name='selected_item']").each(function(){
-    var qty = $(this).parents("tr").find(".bom_item_qty").val();
-    var stock = $(this).parents("tr").find(".item_qty").text();
-    if (parseInt(qty) > parseInt(stock)){
-      alert("数量超出库存，请确认数量");
-      return false;
-    }
-    var id = $(this).parents("tr").find(".bom_item_id").val();
-    var remark = $(this).parents("tr").find(".bom_item_remark").val();
-    var item = {id:id,qty:qty,remark:remark}
-    items.push(item);
-  });
-  if(items.length==0){
-    alert("没有选择数据，请重试！");
-    return false;
-  }
-  var datas = JSON.stringify(items);
-
-  $.ajaxSetup({
-      beforeSend: function(xhr, settings) {
-          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-              xhr.setRequestHeader("X-CSRFToken", csrftoken);
-          }
-      }
-  });
-
-  $.ajax({
-    url:"/create_new_bom/",
-    data:{"datas":datas,
-    "user_id":user_id,
-    "new_bom_name":new_bom_name,
-    "new_bom_description":new_bom_description,
-},
-    type:"POST",
-    success:function(data){
-      if(data.status==false){
-        alert(data.message);
+    var items = new Array();
+    $("input[name='selected_item']").each(function(){
+      var qty = $(this).parents("tr").find(".bom_item_qty").val();
+      var stock = $(this).parents("tr").find(".item_qty").text();
+      if (parseInt(qty) > parseInt(stock)){
+        alert("数量超出库存，请确认数量");
         return false;
-      }else{
-        alert(data.message);
-        //是否保留临时清单
-        $("#bom_item_list").each(function(){
-          $(this).remove();
-        });
-
-        $(".old_bom_names").prepend('<option class="bom_name" value="' + data.id + '">' + new_bom_name + '</option>');
       }
+      var id = $(this).parents("tr").find(".bom_item_id").val();
+      var remark = $(this).parents("tr").find(".bom_item_remark").val();
+      var item = {id:id,qty:qty,remark:remark}
+      items.push(item);
+    });
+    if(items.length==0){
+      alert("没有选择数据，请重试！");
+      return false;
     }
-  });
+    var datas = JSON.stringify(items);
 
-});
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
 
-
-//bom表查看
-$("#bom_item_view").click(function(){
-  var user_id = $(".user_id").val();
-  var bom_id = $(".old_bom_names").val();
-  if(!bom_id){
-    alert("请选择BOM单号");
-    return false;
-    }
-  $.get('/get_old_bom/',{'bom_id':bom_id,"user_id":user_id},function(data,status){
-      if(status=="success"){
+    $.ajax({
+      url:"/create_new_bom/",
+      data:{"datas":datas,
+      "user_id":user_id,
+      "new_bom_name":new_bom_name,
+      "new_bom_description":new_bom_description,
+  },
+      type:"POST",
+      success:function(data){
         if(data.status==false){
           alert(data.message);
           return false;
         }else{
-          var datas = data.data;
-          $("#bom_item_list").html("");
+          alert(data.message);
+          //是否保留临时清单
+          $("#bom_item_list").each(function(){
+            $(this).remove();
+          });
 
-          $.each(datas,function(i,bom_list){
-            $("#bom_item_list").append(
-              "<tr>"+
-              "<td><input type='checkbox' class='selected_item' name='selected_item'>"+
-              "<input type='hidden' class='bom_item_id'  value='" + bom_list.id + "'></td>"+
-              "<td class='bom_item_ids'>" + bom_list.ids + "</td>"+
-              "<td>" + bom_list.modelname + "</td>"+
-              "<td>" + bom_list.potting + "</td>"+
-              "<td>" + bom_list.position + "</td>"+
-              "<td>" + bom_list.description + "</td>"+
-              "<td>" + bom_list.itemtype + "</td>"+
-              "<td>" + bom_list.price + "</td>"+
-              "<td class='item_qty'>" + bom_list.qty + "</td>"+
-              "<td><input type='text' name='operate_qty' class='bom_item_qty' value='" + bom_list.bom_qty + "'></td>"+
-              "<td><input type='text' name='bom_item_remark' class='bom_item_remark' value='" + bom_list.bom_remark + "'></td>"+
-              "</tr>");
-            });
+          $(".old_bom_names").prepend('<option class="bom_name" value="' + data.id + '">' + new_bom_name + '</option>');
         }
-      }else{
-        alert("操作失败，请重试");
       }
     });
-
   });
 
 
-//保存修改按钮
-$("#save_changed_bom").click(function(){
-  var user_id = $(".user_id").val();
-
-  var items = new Array();
-  $("input[name='selected_item']:checked").each(function(){
-    var qty = $(this).parents("tr").find(".bom_item_qty").val();
-    var stock = $(this).parents("tr").find(".item_qty").text();
-    if (parseInt(qty) > parseInt(stock)){
-      alert("数量超出库存，请确认数量");
+  //bom表查看
+  $("#bom_item_view").click(function(){
+    var user_id = $(".user_id").val();
+    var bom_id = $(".old_bom_names").val();
+    if(!bom_id){
+      alert("请选择BOM单号");
       return false;
-    }
-    var id = $(this).parents("tr").find(".bom_item_id").val();
-    var remark = $(this).parents("tr").find(".bom_item_remark").val();
-    var item = {id:id,qty:qty,remark:remark}
-    items.push(item);
-  });
-  if(items.length==0){
-    alert("没有选择数据，请重试！");
-    return false;
-  }
+      }
+    $.get('/get_old_bom/',{'bom_id':bom_id,"user_id":user_id},function(data,status){
+        if(status=="success"){
+          if(data.status==false){
+            alert(data.message);
+            return false;
+          }else{
+            var datas = data.data;
+            $("#bom_item_list").html("");
 
-  var bom_id = $(".old_bom_names").val();
-  var datas = JSON.stringify(items);
-  $.ajaxSetup({
-      beforeSend: function(xhr, settings) {
-          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            $.each(datas,function(i,bom_list){
+              $("#bom_item_list").append(
+                "<tr>"+
+                "<td><input type='checkbox' class='selected_item' name='selected_item'>"+
+                "<input type='hidden' class='bom_item_id'  value='" + bom_list.id + "'></td>"+
+                "<td class='bom_item_ids'>" + bom_list.ids + "</td>"+
+                "<td>" + bom_list.modelname + "</td>"+
+                "<td>" + bom_list.potting + "</td>"+
+                "<td>" + bom_list.position + "</td>"+
+                "<td>" + bom_list.description + "</td>"+
+                "<td>" + bom_list.itemtype + "</td>"+
+                "<td>" + bom_list.price + "</td>"+
+                "<td class='item_qty'>" + bom_list.qty + "</td>"+
+                "<td><input type='text' name='operate_qty' class='bom_item_qty' value='" + bom_list.bom_qty + "'></td>"+
+                "<td><input type='text' name='bom_item_remark' class='bom_item_remark' value='" + bom_list.bom_remark + "'></td>"+
+                "</tr>");
+              });
           }
-      }
+        }else{
+          alert("操作失败，请重试");
+        }
+      });
   });
 
-  $.ajax({
-    url:"/save_changed_bom/",
-    data:{"datas":datas,
-    "user_id":user_id,
-    "bom_id":bom_id},
-    type:"POST",
-    success:function(data){
-      if(data.status==false){
-        alert(data.message);
+
+  //保存修改按钮
+  $("#save_changed_bom").click(function(){
+    var user_id = $(".user_id").val();
+
+    var items = new Array();
+    $("input[name='selected_item']:checked").each(function(){
+      var qty = $(this).parents("tr").find(".bom_item_qty").val();
+      var stock = $(this).parents("tr").find(".item_qty").text();
+      if (parseInt(qty) > parseInt(stock)){
+        alert("数量超出库存，请确认数量");
         return false;
-      }else{
-        alert(data.message);
       }
-    }
-  });
-
-});
-
-
-// bom名称搜索
-$("#bom_name_search_btn").click(function(){
-  var user_id = $(".user_id").val();
-  var data = $("#bom_name_search").val();
-  if(data.length == 0){
-    $("#BomSearch").modal('hide');
-    alert("数据为空");
-    return false;
-  }
-  $("#search_bom_result").html("");
-  $.get("/bom_name_search/",{"bom_name_search":data,"user_id":user_id},function(data,status){
-    if(status=="success"){
-      if (data.status==false) {
-        $("#BomSearch").modal('hide');
-        alert(data.message);
-        return false;
-      } else {
-        $.each(data.data,function(i,result){
-          $("#search_bom_result").append("<tr id='search_bom_tr'><td>           <input type='hidden' value='" + result.id + "'><input type='radio' name='search_bom_name' id='search_bom_name' autocomplete='off' value='" + result.id + "'>" + result.name + "</td><td>" + result.user_name + "</td><td>" + result.created + "</td><td>" + result.description + "</td></tr>");
-        });
-      }
-    }else {
-      $("#BomSearch").modal('hide');
-      alert("抱歉，数据提交失败，请刷新重试");
+      var id = $(this).parents("tr").find(".bom_item_id").val();
+      var remark = $(this).parents("tr").find(".bom_item_remark").val();
+      var item = {id:id,qty:qty,remark:remark}
+      items.push(item);
+    });
+    if(items.length==0){
+      alert("没有选择数据，请重试！");
       return false;
     }
-  });
-});
 
-//BOM搜索结果选择后展示
-$("#bom_item_view_2").click(function(){
-  var user_id = $(".user_id").val();
-  var bom_id = $("#search_bom_result input[name='search_bom_name']:checked").val();
-  if(bom_id.length == 0){
-    alert("没有选择BOM");
-    return false;
-  }
-  $.get('/get_old_bom/',{'bom_id':bom_id,"user_id":user_id},function(data,status){
+    var bom_id = $(".old_bom_names").val();
+    var datas = JSON.stringify(items);
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    $.ajax({
+      url:"/save_changed_bom/",
+      data:{"datas":datas,
+      "user_id":user_id,
+      "bom_id":bom_id},
+      type:"POST",
+      success:function(data){
+        if(data.status==false){
+          alert(data.message);
+          return false;
+        }else{
+          alert(data.message);
+        }
+      }
+    });
+  });
+
+
+  // bom名称搜索
+  $("#bom_name_search_btn").click(function(){
+    var user_id = $(".user_id").val();
+    var data = $("#bom_name_search").val();
+    if(data.length == 0){
+      $("#BomSearch").modal('hide');
+      alert("数据为空");
+      return false;
+    }
+    $("#search_bom_result").html("");
+    $.get("/bom_name_search/",{"bom_name_search":data,"user_id":user_id},function(data,status){
+      if(status=="success"){
+        if (data.status==false) {
+          $("#BomSearch").modal('hide');
+          alert(data.message);
+          return false;
+        } else {
+          $.each(data.data,function(i,result){
+            $("#search_bom_result").append("<tr id='search_bom_tr'><td>           <input type='hidden' value='" + result.id + "'><input type='radio' name='search_bom_name' id='search_bom_name' autocomplete='off' value='" + result.id + "'>" + result.name + "</td><td>" + result.user_name + "</td><td>" + result.created + "</td><td>" + result.description + "</td></tr>");
+          });
+        }
+      }else {
+        $("#BomSearch").modal('hide');
+        alert("抱歉，数据提交失败，请刷新重试");
+        return false;
+      }
+    });
+  });
+
+  //BOM搜索结果选择后展示
+  $("#bom_item_view_2").click(function(){
+    var user_id = $(".user_id").val();
+    var bom_id = $("#search_bom_result input[name='search_bom_name']:checked").val();
+    if(bom_id.length == 0){
+      alert("没有选择BOM");
+      return false;
+    }
+    $.get('/get_old_bom/',{'bom_id':bom_id,"user_id":user_id},function(data,status){
       if(status=="success"){
         if(data.status==false){
           alert(data.message);
@@ -530,61 +526,61 @@ $("#bom_item_view_2").click(function(){
   });
 
 
-$("#id_description").val("");
-$("#id_markup").val("");
+  //检查新增物料函数
+  $("#id_description").val("");
+  $("#id_markup").val("");
+  function check_add_item_table(){
+    var ids = $("#id_ids").val();
+    var modelname = $("#id_modelname").val();
+    var potting = $("#id_potting").val();
+    var position = $("#id_position").val();
+    var itemtype = $("#id_itemtype").val();
+    var qty = $("#id_qty").val();
+    var price = $("#id_price").val();
+    var description = $("#id_description").val();
+    var markup = $("#id_markup").val();
 
-function check_add_item_table(){
-  var ids = $("#id_ids").val();
-  var modelname = $("#id_modelname").val();
-  var potting = $("#id_potting").val();
-  var position = $("#id_position").val();
-  var itemtype = $("#id_itemtype").val();
-  var qty = $("#id_qty").val();
-  var price = $("#id_price").val();
-  var description = $("#id_description").val();
-  var markup = $("#id_markup").val();
-
-  if(!isNaN(ids)==true){
-    $(".id_ids_msg").children("a").text("请输入编码数据");
-    return false;
-  }
-  if(!isNaN(modelname)==true){
-    $(".id_modelname_msg").children("a").text("请输入型号数据");
-    return false;
-  }
-  if(!isNaN(potting)==true){
-    $(".id_potting_msg").children("a").text("请输入封装数据");
-    return false;
-  }
-  if(!isNaN(position)==true){
-    $(".id_position_msg").children("a").text("请输入位号数据");
-    return false;
-  }
-  // if(!isNaN(itemtype)==true){
-  //   $(".id_itemtype_msg").children("a").text("请选择类型数据");
-  //   return false;
-  // }
-  if($.isNumeric(qty)==false){
-    $(".id_qty_msg").children("a").text("请输入数量");
-    return false;
-  }
-  if($.isNumeric(price)==false){
-    $(".id_price_msg").children("a").text("请输入单价数据");
-    return false;
-  }
-  var data = {
-    ids:ids,
-    modelname:modelname,
-    potting:potting,
-    position:position,
-    itemtype:itemtype,
-    qty:qty,
-    price:price,
-    description:description,
-    markup:markup,
+    if(!isNaN(ids)==true){
+      $(".id_ids_msg").children("a").text("请输入编码数据");
+      return false;
+    }
+    if(!isNaN(modelname)==true){
+      $(".id_modelname_msg").children("a").text("请输入型号数据");
+      return false;
+    }
+    if(!isNaN(potting)==true){
+      $(".id_potting_msg").children("a").text("请输入封装数据");
+      return false;
+    }
+    if(!isNaN(position)==true){
+      $(".id_position_msg").children("a").text("请输入位号数据");
+      return false;
+    }
+    // if(!isNaN(itemtype)==true){
+    //   $(".id_itemtype_msg").children("a").text("请选择类型数据");
+    //   return false;
+    // }
+    if($.isNumeric(qty)==false){
+      $(".id_qty_msg").children("a").text("请输入数量");
+      return false;
+    }
+    if($.isNumeric(price)==false){
+      $(".id_price_msg").children("a").text("请输入单价数据");
+      return false;
+    }
+    var data = {
+      ids:ids,
+      modelname:modelname,
+      potting:potting,
+      position:position,
+      itemtype:itemtype,
+      qty:qty,
+      price:price,
+      description:description,
+      markup:markup,
+    };
+    return data;
   };
-  return data;
-};
 
   //新增物料
   $("#create_new_item").click(function(){
@@ -592,7 +588,6 @@ function check_add_item_table(){
     if(data == false){
       return false;
     }
-
     var user_id = $(".user_id").val();
     var datas = JSON.stringify(data);
     $.ajaxSetup({
@@ -649,53 +644,53 @@ function check_add_item_table(){
   });
 
 
-
-$("#itemtype_description").val("");
-$("#create_new_type").click(function(){
-  var user_id = $(".user_id").val();
-  var type_name = $("#itemtype_name").val();
-  var type_description = $("#itemtype_description").val();
-  if(isNaN(type_name)==false){
-    $("#type_name_msg").text("请输入类型名称");
-    return false;
-  }
-  if(isNaN(type_description)==false){
-    $("#type_description_msg").text("请输入类型描述");
-    return false;
-  }
-  var data = {
-    name:type_name,
-    description:type_description,
-  }
-  var datas = JSON.stringify(data);
-
-  $.ajaxSetup({
-      beforeSend: function(xhr, settings) {
-          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-              xhr.setRequestHeader("X-CSRFToken", csrftoken);
-          }
-      }
-  });
-  alert(datas);
-  $.ajax({
-    url:"/create_new_type/",
-    data:{
-      "datas":datas,
-      "user_id":user_id},
-    type:"POST",
-    success:function(data){
-      if(data.status==false){
-        alert(data.message);
-        return false;
-      }else{
-        $("#id_itemtype").prepend("<option value=" + data.id + " selected >" + type_name + "</option>")
-        alert(data.message);
-      }
+  //首页新增类型
+  $("#itemtype_description").val("");
+  $("#create_new_type").click(function(){
+    var user_id = $(".user_id").val();
+    var type_name = $("#itemtype_name").val();
+    var type_description = $("#itemtype_description").val();
+    if(isNaN(type_name)==false){
+      $("#type_name_msg").text("请输入类型名称");
+      return false;
     }
+    if(isNaN(type_description)==false){
+      $("#type_description_msg").text("请输入类型描述");
+      return false;
+    }
+    var data = {
+      name:type_name,
+      description:type_description,
+    }
+    var datas = JSON.stringify(data);
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    alert(datas);
+    $.ajax({
+      url:"/create_new_type/",
+      data:{
+        "datas":datas,
+        "user_id":user_id},
+      type:"POST",
+      success:function(data){
+        if(data.status==false){
+          alert(data.message);
+          return false;
+        }else{
+          $("#id_itemtype").prepend("<option value=" + data.id + " selected >" + type_name + "</option>")
+          alert(data.message);
+        }
+      }
+    });
   });
-});
 
-
+  //类型页面新增类型
   $("#create_new_itemtype").click(function () {
     var name = $("#itemtype_name").val();
     var description = $("#itemtype_description").val();
@@ -741,6 +736,7 @@ $("#create_new_type").click(function(){
 
   });
 
+  //类型页面删除类型
   $(".delete_type_btn").click(function () {
     var type_id = $(this).parents(".type").find("#id").val();
     var parent_element = $(this).parents(".type");
@@ -759,7 +755,7 @@ $("#create_new_type").click(function(){
     });
   });
 
-
+  //类型页面编辑类型信息转换
   $('#EditType').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget)
     var type_id = button.parents('.type').find("#id").val();
@@ -772,7 +768,7 @@ $("#create_new_type").click(function(){
     modal.find("#edit_itemtype_description").val(description);
   })
 
-
+  //类型页面编辑类型
   $("#edit_item_type").click(function () {
     var id = $("#edit_itemtype_id").val();
     var name = $("#edit_itemtype_name").val();
@@ -785,10 +781,8 @@ $("#create_new_type").click(function(){
       $("#edit_type_name_msg").text("请输入类型名称");
       return false;
     }
-
     var data = {id:id,name:name,description:description};
     var datas = JSON.stringify(data);
-
     $.ajaxSetup({
       beforeSend: function(xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -796,7 +790,6 @@ $("#create_new_type").click(function(){
         }
       }
     });
-
     $.ajax({
       url:"/edit_item_type/",
       data:{

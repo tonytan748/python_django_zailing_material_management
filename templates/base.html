@@ -43,6 +43,14 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
+            <li>
+              {% if user.is_authenticated %}
+                <a>{{ user.username}}，欢迎你！</a>
+              {% else %}
+                <a></a>
+              {% endif %}
+            </li>
+
             {% for k in navs %}
             <li><a href="{{k.url}}">{{k.name}}</a></li>
             {% endfor %}
