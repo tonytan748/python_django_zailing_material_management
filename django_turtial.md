@@ -258,13 +258,13 @@ github
 ## 需求分析
 
 
-### 确定新系统的目的、范围、定义和功能时所要做的所有工作。难点在于把握客户真实需求，往往需求方提出的只是表象，而不是真实需求的本质，研发部门要让开发工作变得容易，必须把握住表象之下的软件/程序设计相关的本质。
+确定新系统的目的、范围、定义和功能时所要做的所有工作。难点在于把握客户真实需求，往往需求方提出的只是表象，而不是真实需求的本质，研发部门要让开发工作变得容易，必须把握住表象之下的软件/程序设计相关的本质。
 
 
 ## 主要目的
 
 
-### 让项目实现的功能/过程是可预见的。企业级项目开发，需要在敲代码前进行需求分析、总体设计、详细设计。在设计的过程中会发现最初需求/实现流程/技术栈等要求不合理的地方，越早地发现不合理的地方纠错成本越低。
+让项目实现的功能/过程是可预见的。企业级项目开发，需要在敲代码前进行需求分析、总体设计、详细设计。在设计的过程中会发现最初需求/实现流程/技术栈等要求不合理的地方，越早地发现不合理的地方纠错成本越低。
 
 
 ## 编码前至少三个评审会议
@@ -439,11 +439,90 @@ django-admin startapp
 ```
 
 
-
 # 分类及产品模型的设计与实现
 
 
+## 前置准备
+
+
+ER图（实体关系模型设计）
+
+
+UML类图（类的设计）
+
+
+## Category模型
+
+
+## Product模型
+
+
+## django常用字段类型
+
+
+* BooleanField
+* CharField
+* TextField
+* DateField
+* DateTimeField
+* DecimalField
+* FileField
+* FilePathField
+* FloatField
+* ImageField
+* IntegerField
+* SlugField
+
+
+更多参考：https://docs.djangoproject.com/en/1.8/ref/models/fields/#field-types
+
+
+附:
+
+
+* 安装Pillow
+
+
+```
+sudo apt-get install libjpeg-dev
+pip install --no-cache-dir -I Pillow
+```
+
+
+* 生成 requirements.txt
+
+
+```
+cd /opt/shopsys
+pyenv activate shopsys
+pip freeze > requirements.txt
+```
+
+
 # 使用Admin管理模型
+
+
+## 添加admin应用
+
+
+创建超级管理员
+
+
+```
+python manage.py createsupperuser
+```
+
+
+## 注册模型至admin
+
+
+## 为admin模型字段添加自定义验证
+
+
+## 运行项目检查结果
+
+
+## 提交代码到远程仓库的feature-catalog分支
 
 
 # 模型的变更与同步
