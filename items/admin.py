@@ -22,17 +22,6 @@ class ItemAdmin(admin.ModelAdmin):
     list_display = ('ids', 'name', 'modelname','city', 'office','itemtype','qty','price', 'on_user','use_date')
 
 
-class InOutAdmin(admin.ModelAdmin):
-    list_display = ('item','qty','status','user','created')
-
-class BomlistInline(admin.TabularInline):
-    model = BomList
-
-
-class BomAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    inlines = [BomlistInline]
-
 admin.site.register(City,CityAdmin)
 admin.site.register(Office,OfficeAdmin)
 admin.site.register(UserCity,UserCityAdmin)
@@ -40,5 +29,4 @@ admin.site.register(UserAction,UserActionAdmin)
 
 admin.site.register(ItemType,ItemTypeAdmin)
 admin.site.register(Item,ItemAdmin)
-admin.site.register(InOut,InOutAdmin)
-admin.site.register(Bom,BomAdmin)
+admin.site.register(UseDetail)
