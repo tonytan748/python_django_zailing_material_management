@@ -7,6 +7,8 @@ from django.utils.encoding import python_2_unicode_compatible
 class ItemType(models.Model):
     name = models.CharField(u"名称",max_length=200)
     description = models.TextField(u"描述",blank=True,null=True)
+    code = models.CharField('编码', max_length=20)
+    
     def __str__(self):
         return self.name
     class Meta:
@@ -17,6 +19,7 @@ class ItemType(models.Model):
 class City(models.Model):
     name = models.CharField(u"地区", max_length=20)
     remark = models.TextField('描述', blank=True, null=True)
+    code = models.CharField('编码', max_length=20)
 
     def __str__(self):
         return self.name
