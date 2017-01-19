@@ -4,7 +4,7 @@ from .models import *
 
 
 class CityAdmin(admin.ModelAdmin):
-    list_display = ('name')
+    list_display = ('name',)
 
 class OfficeAdmin(admin.ModelAdmin):
     list_display = ('city', 'name')
