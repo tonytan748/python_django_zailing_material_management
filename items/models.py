@@ -82,7 +82,7 @@ class Item(models.Model):
     use_date = models.DateField('领用时间', blank=True, null=True)
     remark = models.TextField('备注', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
-    edited = models.DateTimeField(now_add=True)
+    edited = models.DateTimeField(auto_now=True)
 
     potting = models.CharField(u"封装",max_length=100,blank=True,null=True)
     position = models.CharField(u"位号",max_length=100,blank=True,null=True)
@@ -96,7 +96,7 @@ class Item(models.Model):
         verbose_name = u"物料"
         verbose_name_plural = u"物料"
 
-    
+
 
 @python_2_unicode_compatible
 class InOut(models.Model):
