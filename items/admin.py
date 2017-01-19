@@ -19,7 +19,7 @@ class ItemTypeAdmin(admin.ModelAdmin):
     list_display = ('name','description')
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('ids','modelname','potting','position','description','markup','qty')
+    list_display = ('ids', 'name', 'modelname','city', 'office','itemtype','qty','price', 'on_user','use_date')
 
 
 class InOutAdmin(admin.ModelAdmin):

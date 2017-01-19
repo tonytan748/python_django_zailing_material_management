@@ -8,7 +8,7 @@ class ItemType(models.Model):
     name = models.CharField(u"名称",max_length=200)
     description = models.TextField(u"描述",blank=True,null=True)
     code = models.CharField('编码', max_length=20)
-    
+
     def __str__(self):
         return self.name
     class Meta:
@@ -87,17 +87,13 @@ class Item(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
-    potting = models.CharField(u"封装",max_length=100,blank=True,null=True)
-    position = models.CharField(u"位号",max_length=100,blank=True,null=True)
-    description = models.TextField(u"描述",null=True,blank=True)
-    markup = models.TextField(u"备注",null=True,blank=True)
 #    image = models.ImageField(null=True)
     def __str__(self):
         return self.ids
 
     class Meta:
-        verbose_name = u"物料"
-        verbose_name_plural = u"物料"
+        verbose_name = u"固定资产"
+        verbose_name_plural = u"固定资产"
 
 
 
