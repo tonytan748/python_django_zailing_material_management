@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*/migrations/
+
+.gitignore
+
 # C extensions
 *.so
 
